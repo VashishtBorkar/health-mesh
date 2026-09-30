@@ -11,6 +11,9 @@ htmlcov/
 node_modules/
 frontend/dist/
 frontend/coverage/
+frontend/*.tsbuildinfo
+frontend/*.config.js
+frontend/*.config.d.ts
 
 *.db
 *.sqlite
@@ -18,4 +21,3 @@ frontend/coverage/
 data/
 uploads/
 logs/
-
