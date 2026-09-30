@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import ReactECharts from 'echarts-for-react'
 import type { EChartsOption } from 'echarts'
 import { Link, useLocation } from 'react-router-dom'
@@ -32,14 +32,7 @@ function readPalette(): Palette {
 }
 
 export function usePalette() {
-  const [palette, setPalette] = useState(readPalette)
-  useEffect(() => {
-    const media = matchMedia('(prefers-color-scheme: dark)')
-    const update = () => setPalette(readPalette())
-    media.addEventListener('change', update)
-    return () => media.removeEventListener('change', update)
-  }, [])
-  return palette
+  return readPalette()
 }
 
 export function ChartPanel({ title, subtitle, description, children, className = '', metricKeys = [] }: {
