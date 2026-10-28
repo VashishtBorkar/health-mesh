@@ -75,3 +75,20 @@ export type CompareResponse = {
   correlation: number | null
 }
 
+export interface ModelingReport {
+  available: boolean
+  target: string
+  selectedModel: string
+  baseline: string
+  contextDays: number
+  developmentRange: { start: string; end: string }
+  testRange: { start: string; end: string }
+  frozenAt: string
+  developmentCount: number
+  developmentVerification?: string
+  developmentModels: Array<{ model: string; mae: number; rmse: number }>
+  testCount: number
+  testModels: Array<{ model: string; mae: number; rmse: number }>
+  points: Array<{ date: string; targetEnd: string; actual: number | null; selected: number; baseline: number }>
+  limitations: string[]
+}

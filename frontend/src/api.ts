@@ -1,4 +1,4 @@
-import type { CompareResponse, DateRange, ImportItem, ImportResult, MetricsResponse, OverviewResponse, TimeseriesResponse } from './types'
+import type { CompareResponse, DateRange, ImportItem, ImportResult, MetricsResponse, ModelingReport, OverviewResponse, TimeseriesResponse } from './types'
 
 const API = '/api/v1'
 
@@ -20,6 +20,7 @@ function rangeQuery(range: DateRange) {
 }
 
 export const api = {
+  modeling: () => fetch(`${API}/modeling/report`).then((response) => parseResponse<ModelingReport>(response)),
   health: () => fetch(`${API}/health`).then((response) => parseResponse<{ profile: string }>(response)),
   metrics: () => fetch(`${API}/metrics`).then((response) => parseResponse<MetricsResponse>(response)),
   overview: (range: DateRange) => {

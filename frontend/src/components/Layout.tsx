@@ -1,8 +1,8 @@
 import {
   Activity, BrainCircuit, CircleGauge, Database, Footprints, GitCompareArrows,
-  HeartPulse, LayoutDashboard, MessageCircle, Moon, Scale, Upload, Utensils,
+  HeartPulse, LayoutDashboard, MessageCircle, Moon, Scale, Upload, Utensils, FlaskConical,
 } from 'lucide-react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useAppContext } from '../context'
 import { DateRangeControl } from './DateRangeControl'
 import { api } from '../api'
@@ -16,9 +16,11 @@ const domains = [
   { to: '/nutrition', label: 'Nutrition', icon: Utensils },
   { to: '/body', label: 'Body', icon: Scale },
   { to: '/compare', label: 'Compare', icon: GitCompareArrows },
+  { to: '/modeling', label: 'Modeling', icon: FlaskConical },
 ]
 
 export function Layout() {
+  const location = useLocation()
   const { openImport } = useAppContext()
   const health = useRequest(api.health, [])
   return (
@@ -40,7 +42,7 @@ export function Layout() {
         <header className="app-header">
           <div className="wordmark">HealthMesh <span>{health.data?.profile === 'personal' ? 'personal history' : 'local ledger'}</span></div>
           <div className="header-actions">
-            <DateRangeControl />
+            {location.pathname !== '/modeling' && <DateRangeControl />}
             <NavLink className="coach-button" to="/coach"><BrainCircuit aria-hidden="true" />Ask HealthMesh <span>Planned</span></NavLink>
             <button className="import-button" type="button" onClick={openImport}><Upload aria-hidden="true" />Import CSV</button>
           </div>

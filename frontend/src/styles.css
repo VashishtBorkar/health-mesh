@@ -358,3 +358,11 @@ a { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+.modeling-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; padding: 24px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.modeling-page .chart-panel { margin-top: 22px; }
+.modeling-table-wrap { overflow-x: auto; }
+.modeling-table { width: 100%; border-collapse: collapse; margin: 18px 0; }
+.modeling-table th, .modeling-table td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--rule-soft); }
+.modeling-table tbody th { font-weight: 400; }
+.modeling-table td { font-variant-numeric: tabular-nums; }
+@media (max-width: 800px) { .modeling-summary { grid-template-columns: 1fr; gap: 12px; } }

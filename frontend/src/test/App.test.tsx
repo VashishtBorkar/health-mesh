@@ -34,6 +34,36 @@ afterEach(() => {
 })
 
 describe('Vital Ledger application', () => {
+  it('shows the modeling empty state without claiming working inference', async () => {
+    mockEmptyApi()
+    render(<MemoryRouter initialEntries={['/modeling']}><App /></MemoryRouter>)
+    expect(await screen.findByText('No completed experiment loaded')).toBeInTheDocument()
+  })
+
+  it('renders saved modeling results with fixed periods and honest model labels', async () => {
+    vi.stubGlobal('fetch', vi.fn((input: RequestInfo | URL) => {
+      const url = String(input)
+      if (url.includes('/metrics')) return response({ dateRange: { start: '2026-08-14', end: '2026-10-21' }, items: [] })
+      if (url.includes('/modeling/report')) return response({
+        available: true, selectedModel: 'ridge/combined', baseline: 'trailing_median_7', contextDays: 7,
+        developmentRange: { start: '2026-09-17', end: '2026-10-07' }, testRange: { start: '2026-10-08', end: '2026-10-21' },
+        developmentCount: 10, testCount: 6,
+        developmentModels: [{ model: 'ridge/combined', mae: 9.33, rmse: 12.66 }, { model: 'chronos/lora', mae: 20.16, rmse: 26.01 }],
+        testModels: [{ model: 'ridge/combined', mae: 10.1, rmse: 12.1 }, { model: 'trailing_median_7', mae: 6.4, rmse: 8.1 }],
+        points: [{ date: '2026-10-08', targetEnd: '2026-10-10', actual: null, selected: 70, baseline: 75 }],
+        limitations: ['Historical backtest, not a live forecast.'],
+      })
+      return response({})
+    }))
+    render(<MemoryRouter initialEntries={['/modeling']}><App /></MemoryRouter>)
+    expect(await screen.findByRole('heading', { name: 'Final held-out evaluation' })).toBeInTheDocument()
+    expect(screen.getByText('Chronos · LoRA fine-tuning')).toBeInTheDocument()
+    expect(screen.getByText('9.33')).toBeInTheDocument()
+    expect(screen.getByText(/the simple baseline performed better on this test/i)).toBeInTheDocument()
+    expect(screen.getByText(/historical backtest, not a live forecast/i)).toBeInTheDocument()
+    expect(screen.queryByRole('combobox', { name: 'Date range' })).not.toBeInTheDocument()
+  })
+
   it('renders the guided empty state and download actions', async () => {
     mockEmptyApi()
     render(<MemoryRouter><App /></MemoryRouter>)

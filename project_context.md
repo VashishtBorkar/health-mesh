@@ -115,4 +115,24 @@ A successful first version should:
 
 ## Current Status
 
-Phase one is implemented as a local React and FastAPI application. It accepts the canonical HealthMesh daily CSV, persists normalized observations and provenance in SQLite, and renders the Vital Ledger dashboard across all core domains. Coach and Insights routes and contracts exist but are explicitly disabled. Provider-specific Fitbit and Cronometer connectors, local inference, forecasting, and anomaly detection remain future work. See [`design_and_implementation_plan.md`](./design_and_implementation_plan.md) for the concrete contracts.
+The local React/FastAPI dashboard and CSV platform are implemented. Focused Google
+Health Takeout and Cronometer Daily Nutrition importers load the user's real
+history into a separate personal database. The current priority is a class-demo
+study of HRV forecasting using that daily history.
+
+The separate `ml/` workspace provides dataset preparation, chronological
+statistical/regression baselines, pretrained Chronos-2, training-only personal
+bias correction, and a fixed LoRA fine-tuning experiment. It compares HRV-only,
+Fitbit, and Fitbit-plus-nutrition inputs. Anomaly calibration, live forecasting,
+and a functional LLM Coach remain future work. See [`ml/README.md`](./ml/README.md) and
+[`design_and_implementation_plan.md`](./design_and_implementation_plan.md).
+
+A fixed exploratory diagnostic now compares next-day HRV with the average over
+the next three days across three chronological development folds. It includes
+stronger mean/median baselines, original-export checks, and forecast plots. The
+three-day combined ridge model led development, but calibration and LoRA did not
+make Chronos outperform the simple baseline. Ridge was frozen before evaluating
+October 8–21 once. It did not beat the baseline on that final test. The holdout
+is now consumed; new model tuning needs new independent evaluation data.
+The `/modeling` page displays the saved development comparison and final-test
+forecasts with limitations. Use `make run-personal` to load the private results.

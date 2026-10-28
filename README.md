@@ -87,4 +87,11 @@ preparation, forecasting baselines, and an optional Chronos-2 validation runner.
 Start with `make setup-ml`, `make prepare-hrv`, and `make baseline-hrv`. Modeling
 results remain under the ignored `health-info/modeling/` directory.
 
+The current study also includes training-only personal calibration, a small LoRA
+fine-tuning experiment, and a completed frozen-model test. Run `make run-personal`
+and open **Modeling** to see saved comparisons and held-out forecasts. The simple
+baseline beat the selected ridge model on the final test; Chronos adaptation did
+not beat the development baseline. See the modeling README for the protocol,
+university GPU commands, and limitations. October 8–21 has already been evaluated.
+
 The versioned API is under `/api/v1`. Interactive documentation is available at `/docs` while the backend is running. The dashboard and any future Coach or anomaly tools consume the same backend analytics functions so metric definitions remain consistent.

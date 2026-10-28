@@ -15,9 +15,18 @@ from healthmesh.models import ImportRecord, MetricDefinition, Observation
 from healthmesh.schemas import CoachRequest
 from healthmesh.services.analytics import compare_payload, date_range, nutrition_completeness, overview_payload, timeseries_payload
 from healthmesh.services.imports import import_parsed_csv
+from healthmesh.services.modeling import modeling_report
 from healthmesh.settings import fixtures_directory
 
 router = APIRouter(prefix="/api/v1")
+
+
+@router.get('/modeling/report')
+def research_report():
+    try:
+        return modeling_report()
+    except (ValueError, OSError) as exc:
+        raise HTTPException(status_code=503, detail={'message': 'The local modeling report could not be read.'}) from exc
 
 
 @router.get("/health")

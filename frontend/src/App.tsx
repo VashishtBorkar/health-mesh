@@ -8,6 +8,7 @@ import { Layout } from './components/Layout'
 import { ActivityPage, BodyPage, IntelligenceSkeleton, NutritionPage, OverviewPage, RecoveryPage, SleepPage } from './pages/DashboardPages'
 import { ComparePage } from './pages/ComparePage'
 import { DataPage } from './pages/DataPage'
+import { ModelingPage } from './pages/ModelingPage'
 
 function shift(dateText: string, amount: number) {
   const date = new Date(`${dateText}T12:00:00`)
@@ -56,6 +57,7 @@ export default function App() {
           <Route path="body" element={<BodyPage />} />
           <Route path="compare" element={<ComparePage />} />
           <Route path="data" element={<DataPage />} />
+          <Route path="modeling" element={<ModelingPage />} />
           <Route path="insights" element={<IntelligenceSkeleton type="insights" />} />
           <Route path="coach" element={<IntelligenceSkeleton type="coach" />} />
           <Route path="*" element={<Navigate to="/" replace />} />

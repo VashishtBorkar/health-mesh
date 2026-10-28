@@ -13,7 +13,56 @@ The current application:
 - treats missing values, explicit zeroes, and nutrition completeness distinctly; and
 - exposes disabled Coach and Insights contracts without generating fake results.
 
-Raw Fitbit and Cronometer parsing, OAuth, cloud services, authentication, automatic sync, desktop packaging, LLM inference, forecasting, and anomaly detection are outside phase one.
+The class-project extension now includes focused Google Health Takeout and
+Cronometer Daily Nutrition importers. They generate validated canonical daily
+observations and a coverage report in a separate personal database. See
+[`docs/personal_data.md`](./docs/personal_data.md) for the concrete conversion rules.
+The separate [`ml/`](./ml/README.md) workspace now provides next-day HRV dataset
+preparation, chronological baseline evaluation, and an optional pretrained
+Chronos-2 runner. Its normal commands evaluate validation only and require an
+explicit saved model selection before the final test. Personal bias calibration,
+LoRA fine-tuning, and a saved-results dashboard at `/modeling` are now implemented.
+Live forecasting, anomaly calibration, and the LLM Coach remain future work,
+along with OAuth, cloud services, authentication, automatic sync, and packaging.
+
+### HRV development diagnostic
+
+`ml/experiments/hrv_diagnostic_v1.json` fixes seven-day historical context and three
+expanding-training folds: September 17–23, September 24–30, and October 1–7.
+Each fold trains only through the preceding day. It compares next-day HRV and
+the next three-calendar-day average against persistence, training mean/median,
+seven-day mean/median, three ridge feature groups, and optional pretrained Chronos.
+Complete target windows must end within their own training or evaluation period.
+
+The runner verifies development HRV and local-wake-date sleep totals against the
+original export, retains unusual readings, and writes private source-audit,
+per-forecast, fold-metric, artifact, and chart outputs. All final-holdout rows are
+excluded from modeling and plotting. Three-day Chronos point forecasts average
+daily marginal medians; they have no claimed aggregate uncertainty interval.
+
+The current exploratory comparison favors combined ridge for the three-day
+average, based on few overlapping targets. Next-day HRV and pretrained Chronos
+have not improved on the strongest simple baseline. The diagnostic command itself
+does not run a final test; the later personalization/finalization stage does.
+
+### Personalization and final evaluation
+
+The fixed personalization experiment adds training-only median residual
+calibration and 30-step rank-four LoRA adaptation of Chronos attention query/value
+weights, restarting from the pinned original checkpoint in each fold. It uses
+complete seven-past/three-future windows with future covariates masked. Neither
+calibration nor LoRA outperformed the simple development baseline.
+
+The explicit finalizer froze combined ridge using development MAE, then evaluated
+October 8–21 once. Ridge's development advantage did not hold: its final error
+exceeded the seven-day median baseline. This test period is now consumed.
+
+`GET /api/v1/modeling/report` reads an explicit local `HEALTHMESH_MODEL_REPORT`
+file only in the personal profile. The `/modeling` page displays saved development
+and final-test comparisons plus a retrospective HRV forecast chart. It uses fixed
+experiment periods, has no inference dependency in FastAPI, and does not enable
+Coach, anomaly detection, or live forecasting. `make run-personal` wires the
+private report path; a default installation shows an honest empty state.
 
 ## Architecture
 
@@ -156,7 +205,7 @@ The reserved Coach request carries `message` plus route, date range, and metric-
 - Date presets end on the latest imported date, never the computer's current date.
 - Seven-day averages use calendar windows, skip missing observations, and require at least three values.
 - Period averages include observed values only and return their sample count.
-- Missing dates remain null so charts render gaps.
+- Missing dates remain null. Line charts connect the surrounding observations without drawing a point on the missing date.
 - Energy balance exists only when both recorded intake and total expenditure exist on that date.
 - Compare aligns exact local dates and always reports its matched sample count.
 - Pearson correlation is hidden for fewer than three pairs or a constant series.

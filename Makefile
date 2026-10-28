@@ -39,10 +39,10 @@ import-personal:
 	.venv/bin/python -m healthmesh.personal_import --google-health health-info/google-health-info.zip --cronometer health-info/cronometer-info.csv --nutrition-days-complete
 
 run-personal:
-	env -u HEALTHMESH_DATABASE_URL HEALTHMESH_PROFILE=personal $(MAKE) run
+	env -u HEALTHMESH_DATABASE_URL HEALTHMESH_PROFILE=personal HEALTHMESH_MODEL_REPORT="$(CURDIR)/health-info/modeling/hrv-final-v1/dashboard.json" $(MAKE) run
 
 dev-personal:
-	env -u HEALTHMESH_DATABASE_URL HEALTHMESH_PROFILE=personal $(MAKE) dev
+	env -u HEALTHMESH_DATABASE_URL HEALTHMESH_PROFILE=personal HEALTHMESH_MODEL_REPORT="$(CURDIR)/health-info/modeling/hrv-final-v1/dashboard.json" $(MAKE) dev
 
 # The research environment is separate from the FastAPI environment.
 setup-ml:
