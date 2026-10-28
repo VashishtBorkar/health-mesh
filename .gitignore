@@ -21,3 +21,5 @@ frontend/*.config.d.ts
 data/
 uploads/
 logs/
+
+health-info/

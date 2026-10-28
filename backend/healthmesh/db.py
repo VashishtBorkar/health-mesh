@@ -13,7 +13,8 @@ def database_url() -> str:
     override = os.getenv("HEALTHMESH_DATABASE_URL")
     if override:
         return override
-    return f"sqlite:///{data_directory() / 'healthmesh.db'}"
+    filename = "healthmesh-personal.db" if os.getenv("HEALTHMESH_PROFILE") == "personal" else "healthmesh.db"
+    return f"sqlite:///{data_directory() / filename}"
 
 
 engine = create_engine(database_url(), connect_args={"check_same_thread": False})

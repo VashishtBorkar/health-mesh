@@ -103,13 +103,18 @@ export function TrendChart({ series, color = 'oxblood', showRaw = true, height =
   const option = useMemo<EChartsOption>(() => ({
     ...baseOption(palette),
     xAxis: { ...(baseOption(palette).xAxis as object), data: series.points.map((point) => point.date) },
-    yAxis: { ...(baseOption(palette).yAxis as object), name: series.unit, nameTextStyle: { color: palette.muted } },
+    yAxis: {
+      ...(baseOption(palette).yAxis as object),
+      name: series.unit,
+      nameTextStyle: { color: palette.muted },
+      scale: true,
+    },
     series: [
       ...(showRaw ? [{
         name: series.label,
         type: 'line' as const,
         data: series.points.map((point) => point.value),
-        connectNulls: false,
+        connectNulls: true,
         symbol: 'circle',
         symbolSize: 5,
         lineStyle: { color: palette[color], opacity: 0.36, width: 1 },
@@ -119,7 +124,7 @@ export function TrendChart({ series, color = 'oxblood', showRaw = true, height =
         name: '7-day average',
         type: 'line' as const,
         data: series.points.map((point) => point.rollingAverage),
-        connectNulls: false,
+        connectNulls: true,
         showSymbol: false,
         lineStyle: { color: palette[color], width: 3 },
       },
@@ -142,11 +147,12 @@ export function MultiLineChart({ series, colors = ['oxblood', 'sage', 'blue'], h
     legend: { bottom: 0, textStyle: { color: palette.muted } },
     grid: { left: 48, right: 22, top: 24, bottom: 62 },
     xAxis: { ...(baseOption(palette).xAxis as object), data: dates },
+    yAxis: { ...(baseOption(palette).yAxis as object), scale: true },
     series: series.map((item, index) => ({
       name: `${item.label} (${item.unit})`,
       type: 'line',
       data: item.points.map((point) => point.value),
-      connectNulls: false,
+      connectNulls: true,
       showSymbol: false,
       lineStyle: { color: palette[colors[index % colors.length]], width: 2.4 },
       itemStyle: { color: palette[colors[index % colors.length]] },
@@ -188,8 +194,8 @@ export function ScatterChart({ pairs, xLabel, yLabel, height = 280 }: {
   const option: EChartsOption = {
     ...baseOption(palette),
     tooltip: { trigger: 'item', backgroundColor: palette.ink, borderWidth: 0, textStyle: { color: palette.paper } },
-    xAxis: { type: 'value', name: xLabel, nameLocation: 'middle', nameGap: 30, axisLabel: { color: palette.muted }, splitLine: { lineStyle: { color: palette.rule } } },
-    yAxis: { type: 'value', name: yLabel, nameLocation: 'middle', nameGap: 38, axisLabel: { color: palette.muted }, splitLine: { lineStyle: { color: palette.rule } } },
+    xAxis: { type: 'value', scale: true, name: xLabel, nameLocation: 'middle', nameGap: 30, axisLabel: { color: palette.muted }, splitLine: { lineStyle: { color: palette.rule } } },
+    yAxis: { type: 'value', scale: true, name: yLabel, nameLocation: 'middle', nameGap: 38, axisLabel: { color: palette.muted }, splitLine: { lineStyle: { color: palette.rule } } },
     series: [{ type: 'scatter', data: pairs.map((pair) => [pair.x, pair.y]), symbolSize: 8, itemStyle: { color: palette.oxblood, opacity: .72 } }],
   }
   return <ReactECharts option={option} style={{ height }} notMerge />

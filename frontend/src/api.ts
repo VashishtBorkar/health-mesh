@@ -20,6 +20,7 @@ function rangeQuery(range: DateRange) {
 }
 
 export const api = {
+  health: () => fetch(`${API}/health`).then((response) => parseResponse<{ profile: string }>(response)),
   metrics: () => fetch(`${API}/metrics`).then((response) => parseResponse<MetricsResponse>(response)),
   overview: (range: DateRange) => {
     const params = rangeQuery(range)

@@ -5,6 +5,8 @@ import {
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAppContext } from '../context'
 import { DateRangeControl } from './DateRangeControl'
+import { api } from '../api'
+import { useRequest } from '../hooks'
 
 const domains = [
   { to: '/', label: 'Overview', icon: LayoutDashboard },
@@ -18,6 +20,7 @@ const domains = [
 
 export function Layout() {
   const { openImport } = useAppContext()
+  const health = useRequest(api.health, [])
   return (
     <div className="app-shell">
       <aside className="side-rail">
@@ -35,7 +38,7 @@ export function Layout() {
       </aside>
       <div className="page-shell">
         <header className="app-header">
-          <div className="wordmark">HealthMesh <span>local ledger</span></div>
+          <div className="wordmark">HealthMesh <span>{health.data?.profile === 'personal' ? 'personal history' : 'local ledger'}</span></div>
           <div className="header-actions">
             <DateRangeControl />
             <NavLink className="coach-button" to="/coach"><BrainCircuit aria-hidden="true" />Ask HealthMesh <span>Planned</span></NavLink>

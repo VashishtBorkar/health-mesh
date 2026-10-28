@@ -40,6 +40,10 @@ Then open `http://127.0.0.1:8000`.
 
 ## First import
 
+For the class project's real Fitbit and Cronometer exports, run `make import-personal`
+then `make run-personal`. See [personal data instructions](./docs/personal_data.md)
+for conversion rules, coverage reports, and the separate personal database.
+
 1. Open HealthMesh and choose **Import CSV**.
 2. Download the empty template or use the bundled 90-day sample.
 3. Preview the file, then import it.

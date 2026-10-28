@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import date
+import os
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from fastapi.responses import FileResponse
@@ -22,7 +23,7 @@ router = APIRouter(prefix="/api/v1")
 @router.get("/health")
 def health(session: Session = Depends(get_session)) -> dict[str, object]:
     session.execute(select(1))
-    return {"status": "ok", "database": "connected"}
+    return {"status": "ok", "database": "connected", "profile": os.getenv("HEALTHMESH_PROFILE", "default")}
 
 
 @router.get("/capabilities")

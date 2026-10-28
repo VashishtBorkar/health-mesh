@@ -25,7 +25,7 @@ export function ComparePage() {
 
   return (
     <main className="page-content">
-      <PageHeader eyebrow="Comparative folio" title="Put two signals on the same dates." description="Each time series keeps its own units; the scatterplot includes only dates where both were observed." />
+      <PageHeader eyebrow="Comparative folio" title="Compare metrics" description="Each time series keeps its own units; the scatterplot includes only dates where both were observed." />
       <section className="compare-controls reveal delay-1">
         <label>First metric<select value={x} onChange={(event) => setX(event.target.value)}>{available.map((metric) => <option key={metric.key} value={metric.key}>{metric.label}</option>)}</select></label>
         <span>and</span>

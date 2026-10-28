@@ -50,14 +50,14 @@ class ImportResult:
         }
 
 
-def import_parsed_csv(session: Session, parsed: ParsedCSV) -> ImportResult:
+def import_parsed_csv(session: Session, parsed: ParsedCSV, *, source_key: str = "healthmesh_csv") -> ImportResult:
     duplicate = session.scalar(select(ImportRecord).where(ImportRecord.sha256 == parsed.sha256))
     if duplicate:
         return ImportResult(duplicate, duplicate=True)
 
-    source = session.scalar(select(DataSource).where(DataSource.key == "healthmesh_csv"))
+    source = session.scalar(select(DataSource).where(DataSource.key == source_key))
     if source is None:
-        raise RuntimeError("HealthMesh CSV source is not configured")
+        raise RuntimeError(f"Data source {source_key} is not configured")
 
     metrics = {
         metric.key: metric

@@ -10,7 +10,7 @@ export function DataPage() {
   const request = useRequest(api.imports, [refreshKey])
   return (
     <main className="page-content">
-      <PageHeader eyebrow="Sources and provenance" title="Every import leaves a receipt." description="Files remain local, repeated uploads are idempotent, and every current value points to its latest import." />
+      <PageHeader eyebrow="Sources and provenance" title="Data and imports" description="Files remain local, repeated uploads are idempotent, and every current value points to its latest import." />
       <section className="data-actions reveal delay-1">
         <button className="primary-button" type="button" onClick={openImport}><Upload aria-hidden="true" />Import CSV</button>
         <a className="secondary-button" href={downloadUrl('template')} download><Download aria-hidden="true" />Empty template</a>
@@ -33,4 +33,3 @@ export function DataPage() {
     </main>
   )
 }
-

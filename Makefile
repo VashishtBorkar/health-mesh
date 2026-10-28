@@ -1,4 +1,4 @@
-.PHONY: setup migrate dev backend frontend test run sample
+.PHONY: setup migrate dev backend frontend test run sample import-personal run-personal dev-personal
 
 setup:
 	@if command -v uv >/dev/null 2>&1; then \
@@ -31,3 +31,13 @@ run:
 
 sample:
 	python3 backend/scripts/generate_sample.py
+
+# These inputs and generated outputs stay in the git-ignored health-info directory.
+import-personal:
+	.venv/bin/python -m healthmesh.personal_import --google-health health-info/google-health-info.zip --cronometer health-info/cronometer-info.csv --nutrition-days-complete
+
+run-personal:
+	env -u HEALTHMESH_DATABASE_URL HEALTHMESH_PROFILE=personal $(MAKE) run
+
+dev-personal:
+	env -u HEALTHMESH_DATABASE_URL HEALTHMESH_PROFILE=personal $(MAKE) dev

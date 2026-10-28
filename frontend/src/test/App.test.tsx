@@ -42,14 +42,39 @@ describe('Vital Ledger application', () => {
     expect(screen.getByRole('link', { name: /download template/i })).toHaveAttribute('href', '/api/v1/downloads/template')
   })
 
+  it('shows units alongside overview summary values', async () => {
+    vi.stubGlobal('fetch', vi.fn((input: RequestInfo | URL) => {
+      const url = String(input)
+      if (url.includes('/analytics/overview')) return response({
+        dateRange: { start: '2026-03-02', end: '2026-03-31' },
+        hasData: true,
+        summaries: {
+          sleep: { value: 438, count: 28, change: null },
+          steps: { value: 8039, count: 30, change: null },
+          calories: { value: 2326, count: 27, change: null },
+          weight: { value: 176, count: 15, change: -4.1 },
+        },
+        coverage: [],
+        latestImport: null,
+      })
+      if (url.includes('/analytics/timeseries')) return response({ dateRange: { start: '2026-03-02', end: '2026-03-31' }, series: [] })
+      if (url.includes('/metrics')) return response({ dateRange: { start: '2026-01-01', end: '2026-03-31' }, items: [] })
+      return response({})
+    }))
+    render(<MemoryRouter><App /></MemoryRouter>)
+    expect(await screen.findByText('8,039 steps')).toBeInTheDocument()
+    expect(screen.getByText('2,326 kcal')).toBeInTheDocument()
+    expect(screen.getByText('176 lb')).toBeInTheDocument()
+  })
+
   it.each([
-    ['/sleep', 'Nights, in sequence.'],
-    ['/recovery', 'Signals that move together.'],
-    ['/activity', 'Movement leaves a trace.'],
-    ['/nutrition', 'Recorded intake, with context.'],
-    ['/body', 'Slow measurements, clearly drawn.'],
-    ['/compare', 'Put two signals on the same dates.'],
-    ['/data', 'Every import leaves a receipt.'],
+    ['/sleep', 'Sleep metrics'],
+    ['/recovery', 'Recovery'],
+    ['/activity', 'Activity'],
+    ['/nutrition', 'Nutrition'],
+    ['/body', 'Body metrics'],
+    ['/compare', 'Compare metrics'],
+    ['/data', 'Data and imports'],
   ])('navigates to %s', async (route, heading) => {
     mockEmptyApi()
     render(<MemoryRouter initialEntries={[route]}><App /></MemoryRouter>)
@@ -57,8 +82,8 @@ describe('Vital Ledger application', () => {
   })
 
   it.each([
-    ['/coach', 'The Coach has a place, not a voice—yet.'],
-    ['/insights', 'Insights will be evidence first.'],
+    ['/coach', 'HealthMesh Coach'],
+    ['/insights', 'Insights'],
   ])('shows a truthful planned state at %s', async (route, heading) => {
     mockEmptyApi()
     render(<MemoryRouter initialEntries={[route]}><App /></MemoryRouter>)
