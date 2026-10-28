@@ -1,0 +1,24 @@
+{
+  "name": "hrv-diagnostic-v1",
+  "target": "hrv_ms",
+  "contextDays": 7,
+  "minTargetObservations": 3,
+  "minimumTrainingExamples": 10,
+  "ridgeAlpha": 10.0,
+  "horizons": [1, 3],
+  "developmentEnd": "2026-10-07",
+  "holdoutStart": "2026-10-08",
+  "folds": [
+    {"name": "development-1", "trainEnd": "2026-09-16", "start": "2026-09-17", "end": "2026-09-23"},
+    {"name": "development-2", "trainEnd": "2026-09-23", "start": "2026-09-24", "end": "2026-09-30"},
+    {"name": "development-3", "trainEnd": "2026-09-30", "start": "2026-10-01", "end": "2026-10-07"}
+  ],
+  "featureGroups": {
+    "history": ["hrv_ms"],
+    "fitbit": ["hrv_ms", "sleep_duration_min", "sleep_efficiency_pct", "steps", "training_load"],
+    "combined": ["hrv_ms", "sleep_duration_min", "sleep_efficiency_pct", "steps", "training_load", "calories_consumed_kcal", "protein_g", "carbohydrates_g", "fat_g"]
+  },
+  "modelId": "amazon/chronos-2",
+  "seed": 42,
+  "notes": "Exploratory diagnostic after initial validation results. No hyperparameter sweep. Seven-day context fixed by earliest-fold three-day target coverage. No holdout evaluation."
+}

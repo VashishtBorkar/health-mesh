@@ -1,0 +1,21 @@
+{
+  "name": "hrv-v1",
+  "target": "hrv_ms",
+  "unit": "ms",
+  "horizonDays": 1,
+  "contextDays": 14,
+  "minTargetObservations": 3,
+  "minimumTrainingExamples": 10,
+  "ridgeAlpha": 10.0,
+  "trainEnd": "2026-09-23",
+  "validationEnd": "2026-10-07",
+  "testEnd": "2026-10-21",
+  "featureGroups": {
+    "history": ["hrv_ms"],
+    "fitbit": ["hrv_ms", "sleep_duration_min", "sleep_efficiency_pct", "steps", "training_load"],
+    "combined": ["hrv_ms", "sleep_duration_min", "sleep_efficiency_pct", "steps", "training_load", "calories_consumed_kcal", "protein_g", "carbohydrates_g", "fat_g"]
+  },
+  "modelId": "amazon/chronos-2",
+  "quantiles": [0.1, 0.5, 0.9],
+  "seed": 42
+}

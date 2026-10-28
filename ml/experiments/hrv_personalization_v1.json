@@ -1,0 +1,18 @@
+{
+  "name": "hrv-personalization-v1",
+  "diagnosticPlan": "hrv_diagnostic_v1.json",
+  "horizonDays": 3,
+  "featureGroup": "combined",
+  "calibration": "training_median_residual",
+  "finetune": {
+    "mode": "lora",
+    "rank": 4,
+    "alpha": 8,
+    "dropout": 0.05,
+    "learningRate": 0.00001,
+    "numSteps": 30,
+    "batchSize": 16,
+    "targetModules": ["self_attention.q", "self_attention.v"]
+  },
+  "notes": "One fixed exploratory experiment, no parameter search or development-fold early stopping. Fine-tuning optimizes daily HRV quantile loss; evaluation scores the mean of three daily marginal medians."
+}

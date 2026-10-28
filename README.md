@@ -82,4 +82,9 @@ make sample    # regenerate the deterministic synthetic fixture
 
 ## API
 
+The separate [HRV modeling workspace](./ml/README.md) provides daily dataset
+preparation, forecasting baselines, and an optional Chronos-2 validation runner.
+Start with `make setup-ml`, `make prepare-hrv`, and `make baseline-hrv`. Modeling
+results remain under the ignored `health-info/modeling/` directory.
+
 The versioned API is under `/api/v1`. Interactive documentation is available at `/docs` while the backend is running. The dashboard and any future Coach or anomaly tools consume the same backend analytics functions so metric definitions remain consistent.

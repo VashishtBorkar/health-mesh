@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "healthmesh-ml"
+version = "0.1.0"
+description = "Reproducible personal HRV forecasting experiments"
+requires-python = ">=3.12,<3.13"
+dependencies = ["numpy>=1.26,<3", "matplotlib>=3.9,<4"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3,<9"]
+chronos = ["chronos-forecasting>=2.2,<3"]
+finetune = ["chronos-forecasting>=2.2,<3", "peft>=0.20,<1", "accelerate>=1,<2"]
+
+[project.scripts]
+healthmesh-ml = "healthmesh_ml.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["healthmesh_ml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

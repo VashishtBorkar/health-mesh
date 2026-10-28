@@ -1,4 +1,6 @@
-.PHONY: setup migrate dev backend frontend test run sample import-personal run-personal dev-personal
+.PHONY: setup migrate dev backend frontend test run sample import-personal run-personal dev-personal setup-ml setup-chronos setup-finetune prepare-hrv baseline-hrv chronos-hrv diagnose-hrv diagnose-hrv-chronos calibrate-hrv finetune-hrv test-ml
+
+ML_DEVICE ?= cpu
 
 setup:
 	@if command -v uv >/dev/null 2>&1; then \
@@ -41,3 +43,52 @@ run-personal:
 
 dev-personal:
 	env -u HEALTHMESH_DATABASE_URL HEALTHMESH_PROFILE=personal $(MAKE) dev
+
+# The research environment is separate from the FastAPI environment.
+setup-ml:
+	@if command -v uv >/dev/null 2>&1; then \
+		cd ml && uv sync --python 3.12 --extra dev --frozen; \
+	else \
+		.venv/bin/python -m venv ml/.venv; \
+		ml/.venv/bin/python -m pip install -e './ml[dev]'; \
+	fi
+
+setup-chronos:
+	@if command -v uv >/dev/null 2>&1; then \
+		cd ml && uv sync --python 3.12 --extra dev --extra chronos --frozen; \
+	else \
+		.venv/bin/python -m venv ml/.venv; \
+		ml/.venv/bin/python -m pip install -e './ml[dev,chronos]'; \
+	fi
+
+prepare-hrv:
+	ml/.venv/bin/python -m healthmesh_ml.cli prepare
+
+setup-finetune:
+	@if command -v uv >/dev/null 2>&1; then \
+		cd ml && uv sync --python 3.12 --extra dev --extra finetune --frozen; \
+	else \
+		.venv/bin/python -m venv ml/.venv; \
+		ml/.venv/bin/python -m pip install -e './ml[dev,finetune]'; \
+	fi
+
+calibrate-hrv:
+	HF_HOME="$(CURDIR)/health-info/model-cache" MPLCONFIGDIR="$(CURDIR)/health-info/modeling/.matplotlib" ml/.venv/bin/python -m healthmesh_ml.personalization --device $(ML_DEVICE)
+
+finetune-hrv:
+	HF_HOME="$(CURDIR)/health-info/model-cache" MPLCONFIGDIR="$(CURDIR)/health-info/modeling/.matplotlib" ml/.venv/bin/python -m healthmesh_ml.personalization --finetune --device $(ML_DEVICE)
+
+baseline-hrv:
+	ml/.venv/bin/python -m healthmesh_ml.cli baselines
+
+chronos-hrv:
+	HF_HOME="$(CURDIR)/health-info/model-cache" ml/.venv/bin/python -m healthmesh_ml.cli chronos
+
+diagnose-hrv:
+	MPLCONFIGDIR="$(CURDIR)/health-info/modeling/.matplotlib" ml/.venv/bin/python -m healthmesh_ml.diagnostic
+
+diagnose-hrv-chronos:
+	HF_HOME="$(CURDIR)/health-info/model-cache" MPLCONFIGDIR="$(CURDIR)/health-info/modeling/.matplotlib" ml/.venv/bin/python -m healthmesh_ml.diagnostic --chronos
+
+test-ml:
+	ml/.venv/bin/python -m pytest ml/tests
